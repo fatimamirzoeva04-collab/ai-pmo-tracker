@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Adoption PMO Tracker</title>
+<meta name="description" content="Portfolio sample: a PMO tracker for AI adoption at a fictional events agency. Illustrative sample data only.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230B0B0F'/%3E%3Cpath d='M4 4.5h8M4 8h5M4 11.5h7' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ---------- Tokens ---------- */
+:root {
+  color-scheme: light;
+  --black: #0B0B0F;
+  --page: #ffffff;
+  --surface: #ffffff;
+  --sunken: #f6f6f8;
+  --ink: #0B0B0F;
+  --ink-2: #45454f;
+  --ink-3: #62626d;
+  --line: #e3e3e8;
+  --line-strong: #b9b9c4;
+  --accent: #6D28D9;
+  --accent-soft: #f3edfd;
+  --on-black: #ffffff;
+  --on-black-2: #c9c9d3;
+  --on-black-line: #4b4b57;
+  --on-black-accent: #a78bfa;
+  --btn: #0B0B0F;
+  --btn-ink: #ffffff;
+  --btn-hover: #6D28D9;
+  --btn-hover-ink: #ffffff;
+  --danger: #b3261e;
+  --overdue-bg: #fdeeec;
+  --overdue-line: #d03b3b;
+  --st-notstarted: #8c8c97;
+  --st-ontrack: #0ca30c;
+  --st-atrisk: #fab219;
+  --st-done: #2b2b33;
+  --glyph-atrisk: #0B0B0F;
+  --shadow: 0 12px 40px rgba(11, 11, 15, .24);
+  --font: "Avenir Next", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #0B0B0F;
+    --surface: #15151b;
+    --sunken: #1e1e26;
+    --ink: #ffffff;
+    --ink-2: #c9c9d3;
+    --ink-3: #a0a0ad;
+    --line: #2c2c36;
+    --line-strong: #51515e;
+    --accent: #a78bfa;
+    --accent-soft: #2a2144;
+    --btn: #ffffff;
+    --btn-ink: #0B0B0F;
+    --btn-hover: #a78bfa;
+    --btn-hover-ink: #0B0B0F;
+    --danger: #ff9a90;
+    --overdue-bg: #381d20;
+    --overdue-line: #f0716a;
+    --st-notstarted: #7c7c88;
+    --st-done: #dcdce4;
+    --shadow: 0 12px 40px rgba(0, 0, 0, .7);
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 var(--font); }
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; }
+ul, ol { padding: 0; }
+h1 { font-size: 1.625rem; line-height: 1.2; letter-spacing: -.015em; font-weight: 700; text-wrap: balance; }
+h2 { font-size: 1.25rem; line-height: 1.25; letter-spacing: -.01em; font-weight: 650; }
+h3 { font-size: 1rem; line-height: 1.35; font-weight: 650; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 24px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.muted { color: var(--ink-3); }
+.report, .sprint, dd, li { overflow-wrap: anywhere; }
+.sub { display: block; color: var(--ink-3); font-size: .8125rem; line-height: 1.4; margin-top: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- Banner and header ---------- */
+.banner { background: var(--black); color: var(--on-black); font-weight: 600; text-align: center; border-bottom: 1px solid var(--on-black-line); }
+.banner .wrap { padding-block: 10px; }
+.warn { background: var(--overdue-bg); border-bottom: 1px solid var(--overdue-line); font-size: .875rem; }
+.warn .wrap { padding-block: 8px; }
+header.top { background: var(--black); color: var(--on-black); }
+.tab-bar { background: var(--surface); color: var(--ink); border-bottom: 1px solid var(--line); }
+.top-row { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; padding-block: 24px; }
+.top-row p { color: var(--on-black-2); margin-top: 4px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Buttons ---------- */
+.btn { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 6px; min-height: 40px; padding: 7px 14px; font-weight: 600; font-size: .875rem; cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+.btn.primary:hover { background: var(--btn-hover); border-color: var(--btn-hover); color: var(--btn-hover-ink); }
+.top .btn { background: transparent; border-color: var(--on-black-line); color: var(--on-black); }
+.top .btn:hover { background: #6D28D9; border-color: var(--on-black-accent); color: #fff; }
+.top .btn:focus-visible { outline-color: var(--on-black-accent); }
+.btn.danger, .btn.danger:hover { background: #b3261e; border-color: #b3261e; color: #fff; }
+.btn.danger:hover { background: #8f1d17; }
+.link-btn { border: 0; background: none; padding: 6px 8px; border-radius: 4px; color: var(--accent); font-weight: 600; font-size: .8125rem; cursor: pointer; }
+.link-btn:hover { background: var(--accent-soft); }
+.link-btn.del { color: var(--danger); }
+.link-btn.del:hover { background: var(--overdue-bg); }
+
+/* ---------- Tabs ---------- */
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+/* Edge fade and chevron, shown only on a side with more tabs to scroll to */
+.tabs-wrap { position: relative; margin-inline: -8px; }
+.tabs-wrap::before, .tabs-wrap::after { position: absolute; top: 0; bottom: 3px; width: 72px; display: flex; align-items: center; padding-bottom: 2px; color: var(--ink); font-size: 1.5rem; line-height: 1; font-weight: 700; pointer-events: none; opacity: 0; transition: opacity .15s; }
+.tabs-wrap::before { content: "‹"; content: "‹" / ""; left: 0; padding-left: 8px; background: linear-gradient(to left, transparent, var(--surface) 65%); }
+.tabs-wrap::after { content: "›"; content: "›" / ""; right: 0; padding-right: 8px; justify-content: flex-end; background: linear-gradient(to right, transparent, var(--surface) 65%); }
+.tabs-wrap.more-left::before, .tabs-wrap.more-right::after { opacity: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { border: 0; background: none; padding: 12px 12px 11px; border-bottom: 3px solid transparent; color: var(--ink-2); font-weight: 600; white-space: nowrap; cursor: pointer; }
+.tab:hover { color: var(--accent); }
+.tab[aria-selected="true"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--accent); }
+.tab:focus-visible { outline-offset: -3px; }
+main { padding-block: 28px 64px; }
+
+/* ---------- Panel layout ---------- */
+.panel-head { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.panel-head p { color: var(--ink-2); max-width: 76ch; margin-top: 4px; text-wrap: pretty; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.overview { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); margin-bottom: 20px; }
+.overview > * { padding: 20px 24px; min-width: 0; }
+.overview > * + * { border-left: 1px solid var(--line); }
+.overview h3 { margin-bottom: 12px; }
+
+/* ---------- Chart ---------- */
+.chart { position: relative; display: grid; }
+.bar-row { display: grid; grid-template-columns: 116px minmax(0, 1fr); align-items: center; width: 100%; border: 0; background: none; padding: 0; text-align: left; border-radius: 4px; min-height: 34px; }
+button.bar-row { cursor: pointer; }
+button.bar-row:hover { background: var(--accent-soft); }
+.bar-row[aria-pressed="true"] { background: var(--accent-soft); }
+.bar-label { display: flex; align-items: center; gap: 8px; font-size: .875rem; padding-left: 6px; }
+.bar-track { display: flex; align-items: center; gap: 8px; border-left: 1px solid var(--line-strong); min-height: 34px; padding-right: 32px; }
+.bar { height: 18px; border-radius: 0 4px 4px 0; flex: none; }
+.bar-val { font-weight: 650; font-size: .875rem; }
+.tip { position: absolute; z-index: 5; pointer-events: none; max-width: 280px; background: var(--ink); color: var(--surface); border-radius: 6px; padding: 8px 10px; font-size: .8125rem; line-height: 1.4; }
+.tip b { display: block; }
+
+/* ---------- Next up ---------- */
+.next { list-style: none; display: grid; gap: 10px; }
+.next li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+.next time { font-weight: 650; font-size: .875rem; }
+.next .late time { color: var(--danger); }
+
+/* ---------- Status and tags ---------- */
+.st { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-weight: 600; font-size: .875rem; }
+.ic { width: 16px; height: 16px; flex: none; display: block; }
+.tag { display: inline-block; border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 7px; font-size: .8125rem; font-weight: 600; white-space: nowrap; }
+.tag.high { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.tag.low { border-color: var(--line); color: var(--ink-3); }
+.tag.late { border-color: var(--overdue-line); background: var(--overdue-line); color: #fff; }
+@media (prefers-color-scheme: dark) { .tag.late { color: #1b0d0d; } }
+.ltr { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-size: .75rem; font-weight: 700; }
+
+/* ---------- Filters ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.filters label { display: grid; gap: 4px; font-size: .8125rem; font-weight: 600; color: var(--ink-2); }
+.filters label.check { display: flex; align-items: center; gap: 8px; min-height: 40px; font-size: .875rem; color: var(--ink); cursor: pointer; }
+.filters .count { margin-left: auto; min-height: 40px; display: flex; align-items: center; color: var(--ink-3); font-size: .875rem; }
+select:hover, input:hover, textarea:hover { border-color: var(--accent); }
+select, input, textarea { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 7px 10px; min-height: 40px; width: 100%; }
+input[type="checkbox"] { width: 18px; min-height: 18px; height: 18px; accent-color: var(--accent); }
+.filters select { min-width: 150px; }
+textarea { min-height: 84px; resize: vertical; }
+
+/* ---------- Tables ---------- */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: .8125rem; font-weight: 600; color: var(--ink-3); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: break-word; }
+[id^="list"] { overflow-x: auto; }
+th:first-child, td:first-child { padding-left: 24px; }
+th:last-child, td:last-child { padding-right: 16px; }
+tbody tr:last-child td { border-bottom: 0; }
+td.nowrap { white-space: nowrap; }
+td.title { font-weight: 600; min-width: 190px; overflow-wrap: anywhere; }
+td.title .sub { font-weight: 400; }
+td.act { white-space: nowrap; text-align: right; padding-block: 7px; }
+tr.overdue td { background: var(--overdue-bg); }
+tr.overdue td:first-child { box-shadow: inset 4px 0 0 var(--overdue-line); }
+tr.closed td.title { font-weight: 400; color: var(--ink-2); }
+tr.flash td, .sprint.flash { animation: flash 1.8s ease-out; }
+@keyframes flash { from { background: var(--accent-soft); } }
+.empty { padding: 40px 24px; text-align: center; color: var(--ink-2); }
+.empty .btn { margin-top: 12px; }
+
+/* ---------- Sprints ---------- */
+.sprints { display: grid; gap: 20px; }
+.sprint-head { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; padding: 20px 24px 14px; }
+.sprint-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); border-top: 1px solid var(--line); }
+.sprint-notes { padding: 16px 24px 20px; border-left: 1px solid var(--line); display: grid; gap: 14px; align-content: start; }
+.sprint-notes h4 { margin: 0 0 2px; font-size: .8125rem; color: var(--ink-3); font-weight: 600; }
+.cmp { table-layout: fixed; }
+.cmp thead th:first-child { width: 150px; }
+.cmp th, .cmp td { vertical-align: middle; }
+.cmp thead th { white-space: normal; color: var(--ink); font-size: .9375rem; vertical-align: top; }
+.cmp tbody th { font-weight: 600; width: 150px; white-space: normal; border-bottom: 1px solid var(--line); }
+.cmp tbody tr:last-child th { border-bottom: 0; }
+.cmp .pick { background: var(--accent-soft); }
+.cmp .tag { margin-top: 4px; border-color: var(--accent); color: var(--accent); }
+.big { font-size: 1.125rem; font-weight: 650; }
+.dots { display: inline-flex; gap: 3px; margin-left: 8px; vertical-align: 1px; }
+.dots i { width: 9px; height: 9px; border-radius: 2px; background: var(--line); }
+.dots i.on { background: var(--accent); }
+
+/* ---------- Governance ---------- */
+.gov { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+.report { padding: 32px 36px 36px; }
+.report > p.lead { font-size: 1.0625rem; margin: 10px 0 0; max-width: 62ch; }
+.report section { margin-top: 26px; }
+.report section h3 { padding-bottom: 6px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+.report ol, .report ul { padding-left: 22px; display: grid; gap: 10px; }
+.report li::marker { color: var(--ink-3); font-weight: 600; }
+.side { padding: 20px 24px; }
+.side h3 { margin-bottom: 12px; }
+.side .bar-row { grid-template-columns: 110px minmax(0, 1fr); }
+.side p { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: .875rem; }
+
+/* ---------- Dialogs and toast ---------- */
+dialog { border: 0; border-radius: 10px; padding: 0; background: var(--surface); color: var(--ink); width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); box-shadow: var(--shadow); }
+dialog::backdrop { background: rgba(12, 18, 34, .55); }
+dialog form { display: flex; flex-direction: column; max-height: calc(100dvh - 32px); }
+.dlg-head { padding: 20px 24px 12px; }
+.dlg-body { padding: 4px 24px 20px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.dlg-body.text { display: block; }
+.field { display: grid; gap: 4px; align-content: start; }
+.field.full { grid-column: 1 / -1; }
+.field > span { font-size: .8125rem; font-weight: 600; }
+.field small { color: var(--ink-3); font-size: .8125rem; line-height: 1.4; }
+.field .err { color: var(--danger); font-weight: 600; }
+.field [aria-invalid="true"] { border-color: var(--danger); }
+.dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px; border-top: 1px solid var(--line); }
+#toast { position: fixed; z-index: 20; left: 50%; bottom: 20px; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 32px); display: flex; align-items: center; gap: 12px; background: var(--ink); color: var(--surface); border-radius: 8px; padding: 10px 16px; box-shadow: var(--shadow); font-size: .9375rem; }
+#toast button { border: 0; background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px; }
+footer { border-top: 1px solid var(--line); color: var(--ink-3); font-size: .8125rem; }
+footer .wrap { padding-block: 20px; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 900px) {
+  .gov, .sprint-body { grid-template-columns: minmax(0, 1fr); }
+  .sprint-notes { border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 960px) {
+  /* Data tables become stacked records */
+  table.data, .data tbody, .data td { display: block; }
+  .data thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .data tr { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; padding: 14px 24px 8px; border-bottom: 1px solid var(--line); }
+  .data tbody tr:last-child { border-bottom: 0; }
+  .data td, .data td:first-child, .data td:last-child { border: 0; padding: 3px 0; white-space: normal; overflow-wrap: anywhere; }
+  .data td[data-label] { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: start; }
+  .data td[data-label]::before { content: attr(data-label); color: var(--ink-3); font-size: .8125rem; line-height: 1.7; }
+  .data td.title, .data td.act { grid-column: 1 / -1; }
+  .data td.title { font-size: 1.0625rem; padding-bottom: 6px; }
+  .data td.act { text-align: left; margin-left: -10px; padding-top: 6px; }
+  .data tr.overdue { background: var(--overdue-bg); box-shadow: inset 4px 0 0 var(--overdue-line); }
+  .data tr.overdue td, .data tr.overdue td:first-child { background: none; box-shadow: none; }
+}
+@media (max-width: 760px) {
+  .data tr { grid-template-columns: minmax(0, 1fr); padding: 14px 16px 8px; }
+  .btn { padding-inline: 12px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 1.375rem; }
+  .top-row { padding-block: 18px; }
+  .tabs-wrap { margin-inline: -16px; }
+  .tabs { padding-inline: 8px; }
+  .overview { grid-template-columns: minmax(0, 1fr); }
+  .overview > * { padding: 16px; }
+  .overview > * + * { border-left: 0; border-top: 1px solid var(--line); }
+  .filters { padding: 14px 16px; display: grid; grid-template-columns: 1fr 1fr; }
+  .filters select { min-width: 0; }
+  .filters .count { margin-left: 0; min-height: 0; grid-column: 1 / -1; }
+  .filters label.check { grid-column: 1 / -1; min-height: 32px; }
+  .btn { min-height: 44px; }
+  select, input, textarea { font-size: 16px; min-height: 44px; }
+  .link-btn { min-height: 40px; padding-inline: 10px; }
+  .sprint-head { padding: 16px 16px 12px; flex-direction: column; }
+  .sprint-head .act { margin-left: -10px; }
+  .sprint-notes { padding: 14px 16px 18px; }
+  .cmp th, .cmp td { padding: 10px 8px; }
+  .cmp th:first-child { padding-left: 16px; }
+  .cmp thead th:first-child, .cmp tbody th { width: 104px; }
+  .cmp .dots { display: flex; margin: 4px 0 0; }
+  .report { padding: 22px 16px 26px; }
+  .side { padding: 16px; }
+  .dlg-body { grid-template-columns: 1fr; padding-inline: 16px; }
+  .dlg-head, .dlg-foot { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+@media print {
+  .banner { color: #000; background: none; border-bottom: 1px solid #000; }
+  .actions, .tabs, .filters, .act, .panel-head .btn, #toast, .side { display: none !important; }
+  .gov { display: block; }
+}
+</style>
+</head>
+<body>
+
+<div class="banner" role="note"><div class="wrap">Illustrative sample data, not real company information.</div></div>
+<div class="warn" id="storageWarn" role="status" hidden><div class="wrap"></div></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div>
+        <h1>AI Adoption PMO Tracker</h1>
+        <p>AI Taskforce: New York, London, Singapore</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnExport" type="button">Export JSON</button>
+        <button class="btn" id="btnImport" type="button">Import JSON</button>
+        <button class="btn" id="btnReset" type="button">Reset data</button>
+        <input id="fileInput" type="file" accept=".json,application/json" aria-label="Choose a JSON file to import" hidden>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="tab-bar"><div class="wrap"><div class="tabs-wrap" id="tabsWrap"><div class="tabs" role="tablist" aria-label="Tracker sections" id="tabs"></div></div></div></div>
+
+<main class="wrap">
+  <section id="panel-initiatives" role="tabpanel" aria-labelledby="tab-initiatives">
+    <div class="panel-head">
+      <div><h2>Initiatives</h2><p>Every AI initiative the taskforce is running, with its owner and next milestone.</p></div>
+      <button class="btn primary" type="button" data-add="initiatives">Add initiative</button>
+    </div>
+    <div class="box overview">
+      <div><h3 id="chartTitle">Initiatives by status</h3><div class="chart" id="statusChart" role="group" aria-labelledby="chartTitle"></div></div>
+      <div><h3>Next milestones</h3><ul class="next" id="nextUp"></ul></div>
+    </div>
+    <div class="box">
+      <div class="filters">
+        <label>Status<select id="fStatus"></select></label>
+        <label>Priority<select id="fPriority"></select></label>
+        <span class="count" id="cInitiatives" aria-live="polite"></span>
+      </div>
+      <div id="listInitiatives"></div>
+    </div>
+  </section>
+
+  <section id="panel-raid" role="tabpanel" aria-labelledby="tab-raid" hidden>
+    <div class="panel-head">
+      <div><h2>RAID log</h2><p>Risks, actions, issues and decisions captured in PMO meetings. Open items past their follow-up date are highlighted.</p></div>
+      <button class="btn primary" type="button" data-add="raid">Add RAID item</button>
+    </div>
+    <div class="box">
+      <div class="filters">
+        <label>Type<select id="fType"></select></label>
+        <label>State<select id="fState"></select></label>
+        <label class="check"><input type="checkbox" id="fOverdue">Overdue only</label>
+        <span class="count" id="cRaid" aria-live="polite"></span>
+      </div>
+      <div id="listRaid"></div>
+    </div>
+  </section>
+
+  <section id="panel-sprints" role="tabpanel" aria-labelledby="tab-sprints" hidden>
+    <div class="panel-head">
+      <div><h2>AI Sprints</h2><p>Two approaches to the same task, tested side by side. Time saved is measured per task against doing it manually.</p></div>
+      <button class="btn primary" type="button" data-add="sprints">Add sprint</button>
+    </div>
+    <div class="sprints" id="listSprints"></div>
+  </section>
+
+  <section id="panel-benchmarks" role="tabpanel" aria-labelledby="tab-benchmarks" hidden>
+    <div class="panel-head">
+      <div><h2>Benchmarking</h2><p>AI moves by competitors and adjacent industries. The starter rows here cite public sources; every other tab is illustrative.</p></div>
+      <button class="btn primary" type="button" data-add="benchmarks">Add benchmark</button>
+    </div>
+    <div class="box"><div id="listBenchmarks"></div></div>
+  </section>
+
+  <section id="panel-governance" role="tabpanel" aria-labelledby="tab-governance" hidden>
+    <div class="panel-head">
+      <div><h2>Governance summary</h2><p>A weekly update for leadership, written from the other tabs as they stand now.</p></div>
+      <button class="btn primary" type="button" id="btnCopy">Copy as text</button>
+    </div>
+    <div class="gov">
+      <article class="box report" id="report"></article>
+      <aside class="box side">
+        <h3 id="chartTitle2">Initiatives by status</h3>
+        <div class="chart" id="statusChart2" role="group" aria-labelledby="chartTitle2"></div>
+        <p>Risks are ranked by severity, then by earliest follow-up date. Decisions are those dated in the last 7 days. Asks come from open RAID items that have an ask filled in.</p>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">Portfolio sample. Your edits stay in this browser unless you export them.<br>
+  Built by <a href="https://www.linkedin.com/in/fotima-mirzoeva-321778176" target="_blank" rel="noopener noreferrer">Fotima Mirzoeva<span class="sr"> on LinkedIn (opens in a new tab)</span></a></div></footer>
+
+<dialog id="editDlg" aria-labelledby="editTitle">
+  <form method="dialog" novalidate>
+    <div class="dlg-head"><h2 id="editTitle"></h2></div>
+    <div class="dlg-body" id="editBody"></div>
+    <div class="dlg-foot">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="editSave">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirmDlg" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+  <form method="dialog">
+    <div class="dlg-head"><h2 id="confirmTitle"></h2></div>
+    <div class="dlg-body text"><p id="confirmText"></p></div>
+    <div class="dlg-foot">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn danger" type="submit" value="ok" id="confirmOk"></button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" hidden><span></span><button type="button" hidden>Undo</button></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Constants and schema ---------- */
+  var KEY = 'ai-pmo-tracker-v1';
+  var DISCLAIMER = 'Illustrative sample data, not real company information.';
+  var STATUS = ['Not started', 'On track', 'At risk', 'Done'];
+  var LEVELS = ['High', 'Medium', 'Low'];
+  var TYPES = ['Risk', 'Action', 'Issue', 'Decision'];
+  var STATES = ['Open', 'Closed'];
+  var BENCH = ['Competitor', 'Adjacent industry', 'Parent company (event production)'];
+  var RECS = ['Adopt approach A', 'Adopt approach B', 'Run another round', 'Use neither'];
+  var ST_VAR = { 'Not started': '--st-notstarted', 'On track': '--st-ontrack', 'At risk': '--st-atrisk', 'Done': '--st-done' };
+
+  // k: key, l: label, t: input type, req: required, o: options, full: full-width field, h: hint
+  var SCHEMA = {
+    initiatives: { one: 'initiative', fields: [
+      { k: 'name', l: 'Initiative', t: 'text', req: 1, full: 1 },
+      { k: 'owner', l: 'Owner', t: 'text', req: 1 },
+      { k: 'office', l: 'Office', t: 'text', list: ['New York', 'London', 'Singapore', 'Global'] },
+      { k: 'status', l: 'Status', t: 'select', o: STATUS },
+      { k: 'priority', l: 'Priority', t: 'select', o: LEVELS, def: 'Medium' },
+      { k: 'milestone', l: 'Next milestone', t: 'text', full: 1 },
+      { k: 'due', l: 'Due date', t: 'date' }
+    ] },
+    raid: { one: 'RAID item', fields: [
+      { k: 'title', l: 'Description', t: 'textarea', req: 1, full: 1 },
+      { k: 'type', l: 'Type', t: 'select', o: TYPES },
+      { k: 'severity', l: 'Severity', t: 'select', o: LEVELS, def: 'Medium', h: 'Ranks the top 3 risks in the summary.' },
+      { k: 'date', l: 'Date raised', t: 'date', req: 1 },
+      { k: 'owner', l: 'Owner', t: 'text', req: 1 },
+      { k: 'followUp', l: 'Follow-up date', t: 'date' },
+      { k: 'state', l: 'State', t: 'select', o: STATES },
+      { k: 'meeting', l: 'PMO meeting', t: 'text', full: 1 },
+      { k: 'ask', l: 'Ask of leadership', t: 'text', full: 1, h: 'Optional. Appears in the governance summary while the item is open.' }
+    ] },
+    sprints: { one: 'sprint', fields: [
+      { k: 'task', l: 'Task tested', t: 'text', req: 1, full: 1 },
+      { k: 'owner', l: 'Owner', t: 'text' },
+      { k: 'date', l: 'Date run', t: 'date' },
+      { k: 'aName', l: 'Approach A', t: 'text', req: 1 },
+      { k: 'bName', l: 'Approach B', t: 'text', req: 1 },
+      { k: 'aTime', l: 'A: minutes saved per task', t: 'number', min: -999, max: 9999 },
+      { k: 'bTime', l: 'B: minutes saved per task', t: 'number', min: -999, max: 9999 },
+      { k: 'aQuality', l: 'A: quality score (1 to 5)', t: 'number', min: 1, max: 5 },
+      { k: 'bQuality', l: 'B: quality score (1 to 5)', t: 'number', min: 1, max: 5 },
+      { k: 'notes', l: 'Notes', t: 'textarea', full: 1 },
+      { k: 'rec', l: 'Recommendation', t: 'select', o: RECS, def: 'Run another round', full: 1 },
+      { k: 'recWhy', l: 'Reason for the recommendation', t: 'textarea', full: 1 }
+    ] },
+    benchmarks: { one: 'benchmark', fields: [
+      { k: 'org', l: 'Organization', t: 'text', req: 1 },
+      { k: 'kind', l: 'Type', t: 'select', o: BENCH },
+      { k: 'move', l: 'AI move', t: 'textarea', req: 1, full: 1 },
+      { k: 'when', l: 'When', t: 'text', h: 'For example, Dec 2025.' },
+      { k: 'url', l: 'Source link', t: 'url', h: 'Must start with http:// or https://' },
+      { k: 'takeaway', l: 'What it means for us', t: 'textarea', full: 1 }
+    ] }
+  };
+  var COLS = Object.keys(SCHEMA);
+  var TABS = [
+    ['initiatives', 'Initiatives'], ['raid', 'RAID log'], ['sprints', 'AI Sprints'],
+    ['benchmarks', 'Benchmarking'], ['governance', 'Governance summary']
+  ];
+
+  /* ---------- Helpers ---------- */
+  function $(id) { return document.getElementById(id); }
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
+  function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function today() { return iso(new Date()); }
+  function offset(n) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return iso(d); }
+  function parse(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12); }
+  function validDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && iso(parse(s)) === s; }
+  function fmt(s, short) {
+    if (!s) return '';
+    return parse(s).toLocaleDateString('en-GB', short ? { day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function dayDiff(a, b) { return Math.round((parse(a) - parse(b)) / 864e5); }
+  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many || one + 's'); }
+  function safeUrl(u) {
+    try { var x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch (e) { return ''; }
+  }
+  function byDate(k) { return function (a, b) { return (a[k] || '9999').localeCompare(b[k] || '9999'); }; }
+  function sentence(s) { s = String(s).trim(); return !s || /[.!?]$/.test(s) ? s : s + '.'; }
+  function isOverdue(r) { return r.state === 'Open' && !!r.followUp && r.followUp < today(); }
+  function isLate(i) { return i.status !== 'Done' && !!i.due && i.due < today(); }
+
+  function icon(status) {
+    var c = 'var(' + ST_VAR[status] + ')', s = '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true">';
+    if (status === 'Not started') s += '<circle cx="8" cy="8" r="6" fill="none" stroke="' + c + '" stroke-width="2"/>';
+    if (status === 'On track') s += '<circle cx="8" cy="8" r="7" fill="' + c + '"/><path d="M6.4 4.8 11 8l-4.6 3.2z" fill="#fff"/>';
+    if (status === 'At risk') s += '<path d="M8 1.2 15.4 14.4H.6z" fill="' + c + '"/><path d="M8 5.8v4M8 11.6v1" stroke="var(--glyph-atrisk)" stroke-width="1.6" stroke-linecap="round"/>';
+    if (status === 'Done') s += '<circle cx="8" cy="8" r="7" fill="' + c + '"/><path d="m4.9 8.2 2.2 2.2 4-4.6" fill="none" stroke="var(--surface)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>';
+    return s + '</svg>';
+  }
+  function statusHtml(s) { return '<span class="st">' + icon(s) + esc(s) + '</span>'; }
+  function levelHtml(l) { return '<span class="tag ' + l.toLowerCase() + '">' + esc(l) + '</span>'; }
+
+  /* ---------- Sample data. Dates are relative to today so the demo never goes stale. ---------- */
+  function sample() {
+    var o = offset;
+    var d = {
+      initiatives: [
+        { name: 'Event session summaries', owner: 'Content Lead', office: 'New York', status: 'On track', priority: 'High', milestone: 'Pilot on three sessions at a client summit', due: o(9) },
+        { name: 'Proposal-drafting prompt library', owner: 'Proposals Lead', office: 'London', status: 'On track', priority: 'High', milestone: 'Publish v1 with 20 approved prompts in Tool A', due: o(5) },
+        { name: 'Attendee FAQ assistant', owner: 'Digital Experience Lead', office: 'Singapore', status: 'At risk', priority: 'High', milestone: 'Legal sign-off on data handling in Tool B', due: o(2) },
+        { name: 'Post-event survey analysis', owner: 'Insights Manager', office: 'London', status: 'On track', priority: 'Medium', milestone: 'Compare AI themes with manual coding on two surveys', due: o(16) },
+        { name: 'Live caption translation pilot', owner: 'Technical Producer', office: 'Singapore', status: 'At risk', priority: 'Medium', milestone: 'Confirm venue network test date', due: o(-3) },
+        { name: 'Run-of-show drafting assistant', owner: 'Production Manager', office: 'New York', status: 'Not started', priority: 'Medium', milestone: 'Agree scope and test shows', due: o(30) },
+        { name: 'Venue research briefs', owner: 'Sourcing Lead', office: 'London', status: 'Not started', priority: 'Low', milestone: 'Draft brief template', due: o(42) },
+        { name: 'AI usage policy and training', owner: 'PMO Lead', office: 'Global', status: 'Done', priority: 'High', milestone: 'All three offices completed training', due: o(-8) },
+        { name: 'Meeting notes to RAID log', owner: 'PMO Analyst', office: 'New York', status: 'Done', priority: 'Low', milestone: 'Handed over to PMO as standard practice', due: o(-15) }
+      ],
+      raid: [
+        { type: 'Risk', title: 'Attendee personal data could be entered into Tool B before the privacy review is complete', severity: 'High', date: o(-12), owner: 'Digital Experience Lead', followUp: o(-2), state: 'Open', meeting: 'Weekly PMO sync', ask: 'Nominate a Legal reviewer for Tool B this week' },
+        { type: 'Risk', title: 'Session summaries may misquote speakers if published without human review', severity: 'High', date: o(-6), owner: 'Content Lead', followUp: o(4), state: 'Open', meeting: 'AI Taskforce stand-up', ask: '' },
+        { type: 'Risk', title: 'Prompt library use may stay low if templates do not fit regional proposal formats', severity: 'Medium', date: o(-9), owner: 'Proposals Lead', followUp: o(6), state: 'Open', meeting: 'Weekly PMO sync', ask: '' },
+        { type: 'Risk', title: 'Survey themes may miss nuance in non-English responses', severity: 'Low', date: o(-20), owner: 'Insights Manager', followUp: o(12), state: 'Open', meeting: 'Monthly governance review', ask: '' },
+        { type: 'Action', title: 'Share the approved-tools list with all three offices', severity: 'Medium', date: o(-10), owner: 'PMO Lead', followUp: o(-4), state: 'Open', meeting: 'Weekly PMO sync', ask: '' },
+        { type: 'Action', title: 'Collect baseline hours for proposal first drafts', severity: 'Medium', date: o(-5), owner: 'PMO Analyst', followUp: o(3), state: 'Open', meeting: 'AI Taskforce stand-up', ask: '' },
+        { type: 'Issue', title: 'Venue network test for live captions slipped, so the pilot date is unconfirmed', severity: 'High', date: o(-4), owner: 'Technical Producer', followUp: o(1), state: 'Open', meeting: 'Weekly PMO sync', ask: 'Approve a one-day technical rehearsal in Singapore' },
+        { type: 'Issue', title: 'Single sign-on for Tool A failed for London freelancers', severity: 'Medium', date: o(-14), owner: 'IT Partner', followUp: o(-7), state: 'Closed', meeting: 'Weekly PMO sync', ask: '' },
+        { type: 'Decision', title: 'Every client-facing AI output needs a named human reviewer', severity: 'High', date: o(-2), owner: 'AI Taskforce Chair', followUp: '', state: 'Closed', meeting: 'Monthly governance review', ask: '' },
+        { type: 'Decision', title: 'Use Prompt v2 for event recap summaries in the next pilot', severity: 'Medium', date: o(-1), owner: 'Content Lead', followUp: o(9), state: 'Open', meeting: 'AI Taskforce stand-up', ask: '' },
+        { type: 'Decision', title: 'Limit the attendee FAQ assistant to public event information in phase 1', severity: 'High', date: o(-13), owner: 'AI Taskforce Chair', followUp: '', state: 'Closed', meeting: 'Monthly governance review', ask: '' }
+      ],
+      sprints: [
+        { task: 'Event recap summaries', owner: 'Content Lead', date: o(-3), aName: 'Prompt v1 (open-ended)', bName: 'Prompt v2 (structured)', aTime: 25, bTime: 35, aQuality: 3, bQuality: 4, notes: 'Same five session transcripts, scored by two reviewers. v1 missed speaker attributions in two recaps. v2 asks for key points, quotes to verify and next steps.', rec: 'Adopt approach B', recWhy: 'Saves more time and needs fewer corrections. Keep the quote check as a human step.' },
+        { task: 'Proposal first drafts', owner: 'Proposals Lead', date: o(-8), aName: 'Tool A with prompt library', bName: 'Tool B with past proposals', aTime: 70, bTime: 80, aQuality: 4, bQuality: 3, notes: 'Four past briefs. Tool B drafts were faster but reused old client wording twice.', rec: 'Adopt approach A', recWhy: 'Slightly slower, but safer for client confidentiality and closer to house style.' },
+        { task: 'Post-event survey theme coding', owner: 'Insights Manager', date: o(-15), aName: 'Single pass', bName: 'Two passes with a theme list', aTime: 90, bTime: 75, aQuality: 3, bQuality: 4, notes: 'One survey of 180 comments. Too small a sample to judge multilingual responses.', rec: 'Run another round', recWhy: 'Repeat with a multilingual survey before choosing.' }
+      ],
+      benchmarks: [
+        { org: 'INVNT', kind: 'Competitor', move: 'Appointed a global chief AI officer.', when: 'Dec 2025', url: 'https://www.agilitypr.com/pr-agency-news/invnt-appoints-james-nicholas-kinney-as-global-chief-ai-officer-advancing-a-new-era-of-ai-powered-brand-storytelling/', takeaway: 'Executive ownership of AI is becoming a client-facing signal. Consider who the visible sponsor is.' },
+        { org: 'Encore', kind: 'Parent company (event production)', move: 'Promotes AI real-time translation and session summaries for events.', when: 'Page undated', url: 'https://www.encoreglobal.com/about/newsroom/encore-leverages-ai-tools-to-reshape-events-for-gen-z/', takeaway: 'Translation and summaries are already offered as event services in the wider group. Check where our caption and summary pilots can build on them rather than duplicate them.' }
+      ]
+    };
+    COLS.forEach(function (c) { d[c].forEach(function (r) { r.id = uid(); }); });
+    return d;
+  }
+
+  /* ---------- Validation and storage ---------- */
+  function clean(raw) {
+    if (!raw || typeof raw !== 'object') throw new Error('The file does not contain tracker data.');
+    var missing = COLS.filter(function (c) { return !Array.isArray(raw[c]); });
+    if (missing.length) throw new Error('The file is missing: ' + missing.join(', ') + '.');
+    var out = {}, skipped = 0;
+    COLS.forEach(function (c) {
+      var seen = {};
+      out[c] = [];
+      raw[c].forEach(function (r) {
+        if (!r || typeof r !== 'object' || Array.isArray(r)) { skipped++; return; }
+        var row = {}, ok = true;
+        SCHEMA[c].fields.forEach(function (f) {
+          var v = r[f.k];
+          if (f.t === 'select') v = f.o.indexOf(v) >= 0 ? v : (f.def || f.o[0]);
+          else if (f.t === 'number') {
+            v = v === '' || v == null || !isFinite(v) ? null : Math.min(f.max, Math.max(f.min, Math.round(+v)));
+          }
+          else if (f.t === 'date') v = validDate(v) ? v : '';
+          else if (f.t === 'url') v = safeUrl(v);
+          else v = (typeof v === 'string' || typeof v === 'number') ? String(v).trim().slice(0, 4000) : '';
+          if (f.req && !v && f.t !== 'date') ok = false;
+          row[f.k] = v;
+        });
+        if (!ok) { skipped++; return; }
+        row.id = typeof r.id === 'string' && /^[\w-]{1,64}$/.test(r.id) && !seen['_' + r.id] ? r.id : uid();
+        seen['_' + row.id] = 1;
+        out[c].push(row);
+      });
+    });
+    return { data: out, skipped: skipped };
+  }
+  function warn(msg) { $('storageWarn').hidden = !msg; $('storageWarn').firstElementChild.textContent = msg || ''; }
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); }
+    catch (e) { warn('This browser is blocking storage, so changes will be lost when you close the page. Use Export JSON to keep them.'); return null; }
+    if (!raw) return null;
+    try { return clean(JSON.parse(raw)).data; }
+    catch (e) {
+      try { localStorage.setItem(KEY + '-backup', raw); } catch (e2) { /* nothing more to do */ }
+      warn('Saved data could not be read, so the sample data is showing. The unreadable copy was kept in this browser as "' + KEY + '-backup".');
+      return null;
+    }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); warn(''); return true; }
+    catch (e) { warn('Changes could not be saved in this browser. Use Export JSON to keep them.'); return false; }
+  }
+
+  // Sample data is not stored until the first edit, so its dates stay current.
+  var state = load() || sample();
+
+  /* ---------- Toast and confirm ---------- */
+  var toastTimer, undoFn;
+  function toast(msg, undo) {
+    var t = $('toast'), b = t.querySelector('button');
+    t.querySelector('span').textContent = msg;
+    undoFn = undo || null;
+    b.hidden = !undo;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; undoFn = null; }, undo ? 9000 : 4000);
+  }
+  $('toast').querySelector('button').addEventListener('click', function () {
+    var f = undoFn; undoFn = null; $('toast').hidden = true;
+    if (f) f();
+  });
+  function confirmBox(title, text, ok, cb) {
+    var d = $('confirmDlg');
+    $('confirmTitle').textContent = title;
+    $('confirmText').textContent = text;
+    $('confirmOk').textContent = ok;
+    d.querySelector('form').onsubmit = function (e) { e.preventDefault(); d.close(); cb(); };
+    d.showModal();
+  }
+  document.querySelectorAll('[data-close]').forEach(function (b) {
+    b.addEventListener('click', function () { b.closest('dialog').close('cancel'); });
+  });
+
+  /* ---------- Chart ---------- */
+  function counts() {
+    var c = {};
+    STATUS.forEach(function (s) { c[s] = 0; });
+    state.initiatives.forEach(function (i) { c[i.status]++; });
+    return c;
+  }
+  function renderChart(el, interactive) {
+    var c = counts(), total = state.initiatives.length;
+    var max = Math.max.apply(null, STATUS.map(function (s) { return c[s]; }).concat(1));
+    var active = document.activeElement && el.contains(document.activeElement) ? document.activeElement.dataset.status : null;
+    el.innerHTML = STATUS.map(function (s) {
+      var tag = interactive ? 'button' : 'div';
+      return '<' + tag + ' class="bar-row" data-status="' + s + '"' + (interactive
+        ? ' type="button" aria-pressed="' + ($('fStatus').value === s) + '" aria-label="' + s + ': ' + c[s] + ' of ' + total + '. Filter the list."' : '') + '>' +
+        '<span class="bar-label">' + icon(s) + s + '</span><span class="bar-track">' +
+        (c[s] ? '<span class="bar" style="width:' + (c[s] / max * 88).toFixed(1) + '%;background:var(' + ST_VAR[s] + ')"></span>' : '') +
+        '<span class="bar-val num">' + c[s] + '</span></span></' + tag + '>';
+    }).join('') + '<div class="tip" hidden></div>';
+    if (active) { var b = el.querySelector('[data-status="' + active + '"]'); if (b) b.focus(); }
+  }
+  function wireChart(el) {
+    function show(e) {
+      var row = e.target.closest('.bar-row'), tip = el.querySelector('.tip');
+      if (!row || !tip) return;
+      var s = row.dataset.status;
+      var items = state.initiatives.filter(function (i) { return i.status === s; });
+      var total = state.initiatives.length;
+      tip.innerHTML = '<b>' + s + ': ' + items.length + ' of ' + total + (total ? ' (' + Math.round(items.length / total * 100) + '%)' : '') + '</b>' +
+        items.slice(0, 4).map(function (i) { return esc(i.name); }).join('<br>') + (items.length > 4 ? '<br>and ' + (items.length - 4) + ' more' : '');
+      tip.hidden = false;
+      tip.style.left = Math.max(0, Math.min(124, el.clientWidth - tip.offsetWidth)) + 'px';
+      tip.style.top = (row.offsetTop + row.offsetHeight + 4) + 'px';
+    }
+    function hide() { var t = el.querySelector('.tip'); if (t) t.hidden = true; }
+    el.addEventListener('mouseover', show);
+    el.addEventListener('mouseleave', hide);
+    el.addEventListener('focusin', function (e) { if (e.target.matches(':focus-visible')) show(e); });
+    el.addEventListener('focusout', hide);
+  }
+
+  /* ---------- List rendering ---------- */
+  function acts(col, r, name) {
+    return '<button class="link-btn" type="button" data-edit="' + col + '" data-id="' + r.id + '" aria-label="Edit ' + esc(name) + '">Edit</button>' +
+      '<button class="link-btn del" type="button" data-del="' + col + '" data-id="' + r.id + '" aria-label="Delete ' + esc(name) + '">Delete</button>';
+  }
+  function table(heads, rows) {
+    return '<table class="data"><thead><tr>' + heads.map(function (h) { return '<th scope="col">' + h + '</th>'; }).join('') +
+      '<th scope="col"><span class="sr">Edit or delete</span></th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
+  }
+  function td(label, html, cls) { return '<td data-label="' + label + '"' + (cls ? ' class="' + cls + '"' : '') + '><div>' + (html || '<span class="muted">Not set</span>') + '</div></td>'; }
+  function empty(col, filtered) {
+    return '<div class="empty"><p>' + (filtered ? 'Nothing matches these filters.' : 'No ' + SCHEMA[col].one + 's yet.') + '</p>' +
+      (filtered ? '<button class="btn" type="button" data-clear="' + col + '">Clear filters</button>'
+        : '<button class="btn" type="button" data-add="' + col + '">Add ' + SCHEMA[col].one + '</button>') + '</div>';
+  }
+  function showing(n, total, one) { return n === total ? plural(total, one) : n + ' of ' + plural(total, one); }
+
+  function visibleInitiatives() {
+    var s = $('fStatus').value, p = $('fPriority').value;
+    return state.initiatives.filter(function (i) { return (!s || i.status === s) && (!p || i.priority === p); })
+      .sort(function (a, b) { return (a.status === 'Done') - (b.status === 'Done') || byDate('due')(a, b); });
+  }
+  function renderInitiatives() {
+    var rows = visibleInitiatives(), total = state.initiatives.length;
+    $('cInitiatives').textContent = showing(rows.length, total, 'initiative');
+    $('listInitiatives').innerHTML = rows.length ? table(['Initiative', 'Owner', 'Status', 'Priority', 'Next milestone', 'Due'], rows.map(function (i) {
+      return '<tr data-row="' + i.id + '"><td class="title">' + esc(i.name) + (i.office ? '<span class="sub">' + esc(i.office) + '</span>' : '') + '</td>' +
+        td('Owner', esc(i.owner)) + td('Status', statusHtml(i.status)) + td('Priority', levelHtml(i.priority)) + td('Next milestone', esc(i.milestone)) +
+        td('Due', (i.due ? fmt(i.due) : '') + (isLate(i) ? ' <span class="sub"><span class="tag late">Past due</span></span>' : ''), 'nowrap num') +
+        '<td class="act">' + acts('initiatives', i, i.name) + '</td></tr>';
+    })) : empty('initiatives', total > 0);
+
+    var next = state.initiatives.filter(function (i) { return i.status !== 'Done' && i.due; }).sort(byDate('due')).slice(0, 4);
+    $('nextUp').innerHTML = next.length ? next.map(function (i) {
+      return '<li' + (isLate(i) ? ' class="late"' : '') + '><time datetime="' + i.due + '">' + fmt(i.due, true) + '</time><div>' + esc(i.milestone || i.name) +
+        '<span class="sub">' + esc(i.name) + (isLate(i) ? ', past due' : '') + '</span></div></li>';
+    }).join('') : '<li style="display:block" class="muted">No upcoming milestones with a due date.</li>';
+    renderChart($('statusChart'), true);
+  }
+
+  function visibleRaid() {
+    var t = $('fType').value, s = $('fState').value, o = $('fOverdue').checked;
+    return state.raid.filter(function (r) { return (!t || r.type === t) && (!s || r.state === s) && (!o || isOverdue(r)); })
+      .sort(function (a, b) {
+        return (a.state === 'Closed') - (b.state === 'Closed') ||
+          (a.state === 'Closed' ? b.date.localeCompare(a.date) : byDate('followUp')(a, b));
+      });
+  }
+  function renderRaid() {
+    var rows = visibleRaid(), total = state.raid.length, late = state.raid.filter(isOverdue).length;
+    $('cRaid').textContent = showing(rows.length, total, 'item') + ', ' + late + ' overdue';
+    $('listRaid').innerHTML = rows.length ? table(['Description', 'Type', 'Severity', 'Raised', 'Owner', 'Follow-up', 'State'], rows.map(function (r) {
+      var o = isOverdue(r), cls = o ? 'overdue' : r.state === 'Closed' ? 'closed' : '';
+      var fu = r.followUp ? fmt(r.followUp) : '<span class="muted">None</span>';
+      if (o) fu += '<span class="sub"><span class="tag late">Overdue ' + plural(dayDiff(today(), r.followUp), 'day') + '</span></span>';
+      else if (r.state === 'Open' && r.followUp === today()) fu += '<span class="sub"><span class="tag">Due today</span></span>';
+      return '<tr data-row="' + r.id + '" class="' + cls + '"><td class="title">' + esc(r.title) +
+        (r.meeting ? '<span class="sub">' + esc(r.meeting) + '</span>' : '') + (r.ask ? '<span class="sub"><strong>Ask:</strong> ' + esc(r.ask) + '</span>' : '') + '</td>' +
+        td('Type', '<span class="st"><span class="ltr" aria-hidden="true">' + r.type[0] + '</span>' + r.type + '</span>') + td('Severity', levelHtml(r.severity)) +
+        td('Raised', fmt(r.date), 'nowrap num') + td('Owner', esc(r.owner)) + td('Follow-up', fu, 'nowrap num') + td('State', r.state) +
+        '<td class="act">' + acts('raid', r, r.title) + '</td></tr>';
+    })) : empty('raid', total > 0);
+  }
+
+  function metric(v, unit) { return v == null ? '<span class="muted">Not recorded</span>' : '<span class="big num">' + v + '</span> ' + unit; }
+  function quality(v) {
+    if (v == null) return '<span class="muted">Not scored</span>';
+    var d = '';
+    for (var i = 1; i <= 5; i++) d += '<i' + (i <= v ? ' class="on"' : '') + '></i>';
+    return '<span class="big num">' + v + '</span> of 5<span class="dots" aria-hidden="true">' + d + '</span>';
+  }
+  function recText(s) {
+    return s.rec === RECS[0] ? 'Adopt A: ' + s.aName : s.rec === RECS[1] ? 'Adopt B: ' + s.bName : s.rec;
+  }
+  function renderSprints() {
+    var rows = state.sprints.slice().sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+    $('listSprints').innerHTML = rows.length ? rows.map(function (s) {
+      var pa = s.rec === RECS[0], pb = s.rec === RECS[1];
+      var ca = pa ? ' class="pick"' : '', cb = pb ? ' class="pick"' : '', tag = '<br><span class="tag">Recommended</span>';
+      var meta = [s.owner, s.date && fmt(s.date)].filter(Boolean).map(esc).join(', ');
+      return '<article class="box sprint" data-row="' + s.id + '"><div class="sprint-head"><div><h3>' + esc(s.task) + '</h3>' +
+        (meta ? '<span class="sub">' + meta + '</span>' : '') + '</div><div class="act">' + acts('sprints', s, s.task) + '</div></div>' +
+        '<div class="sprint-body"><table class="cmp"><thead><tr><th scope="col"><span class="sr">Measure</span></th>' +
+        '<th scope="col"' + ca + '>A: ' + esc(s.aName) + (pa ? tag : '') + '</th><th scope="col"' + cb + '>B: ' + esc(s.bName) + (pb ? tag : '') + '</th></tr></thead><tbody>' +
+        '<tr><th scope="row">Time saved per task</th><td' + ca + '>' + metric(s.aTime, 'min') + '</td><td' + cb + '>' + metric(s.bTime, 'min') + '</td></tr>' +
+        '<tr><th scope="row">Quality score</th><td' + ca + '>' + quality(s.aQuality) + '</td><td' + cb + '>' + quality(s.bQuality) + '</td></tr></tbody></table>' +
+        '<div class="sprint-notes"><div><h4>Recommendation</h4><strong>' + esc(recText(s)) + '</strong>' + (s.recWhy ? '<p>' + esc(s.recWhy) + '</p>' : '') + '</div>' +
+        (s.notes ? '<div><h4>Notes</h4><p>' + esc(s.notes) + '</p></div>' : '') + '</div></div></article>';
+    }).join('') : '<div class="box">' + empty('sprints', false) + '</div>';
+  }
+
+  function renderBenchmarks() {
+    $('listBenchmarks').innerHTML = state.benchmarks.length ? table(['Organization', 'Type', 'AI move', 'When', 'What it means for us', 'Source'], state.benchmarks.map(function (b) {
+      var u = safeUrl(b.url), host = u ? new URL(u).hostname.replace(/^www\./, '') : '';
+      return '<tr data-row="' + b.id + '"><td class="title" style="min-width:120px">' + esc(b.org) + '</td>' + td('Type', esc(b.kind)) + td('AI move', esc(b.move)) + td('When', esc(b.when), 'nowrap') +
+        td('For us', esc(b.takeaway)) +
+        td('Source', u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(host) + '<span class="sr"> (opens in a new tab)</span></a>' : '<span class="muted">No link</span>') +
+        '<td class="act">' + acts('benchmarks', b, b.org) + '</td></tr>';
+    })) : empty('benchmarks', false);
+  }
+
+  /* ---------- Governance summary: one model, rendered as HTML and as text ---------- */
+  function summary() {
+    var c = counts(), start = offset(-6), end = today(), rank = { High: 0, Medium: 1, Low: 2 };
+    var risks = state.raid.filter(function (r) { return r.type === 'Risk' && r.state === 'Open'; })
+      .sort(function (a, b) { return rank[a.severity] - rank[b.severity] || byDate('followUp')(a, b); });
+    var overdue = state.raid.filter(isOverdue);
+    var active = state.initiatives.length - c.Done;
+    var lead = active
+      ? plural(active, 'initiative') + ' in progress or planned, ' + (c['At risk'] ? c['At risk'] + ' at risk' : 'none at risk') + '. ' +
+        (overdue.length ? plural(overdue.length, 'RAID follow-up') + (overdue.length === 1 ? ' is' : ' are') + ' overdue.' : 'No RAID follow-ups are overdue.')
+      : 'No initiatives are in progress or planned.';
+    function meta(r) {
+      return 'Owner: ' + r.owner + (r.followUp ? '. Follow-up: ' + fmt(r.followUp) + (isOverdue(r) ? ' (overdue)' : '') : '') + '.';
+    }
+    return {
+      title: 'AI Taskforce weekly update', range: fmt(start) + ' to ' + fmt(end), lead: lead, counts: c, total: state.initiatives.length,
+      sections: [
+        { h: 'Initiatives at risk', none: 'None this week.', items: state.initiatives.filter(function (i) { return i.status === 'At risk'; }).sort(byDate('due')).map(function (i) {
+          return { main: i.name + (i.office ? ' (' + i.office + ')' : ''), sub: (i.milestone ? 'Next: ' + i.milestone + (i.due ? ', due ' + fmt(i.due) : '') + (isLate(i) ? ' (past due)' : '') + '. ' : '') + 'Owner: ' + i.owner + '.' };
+        }) },
+        { h: 'Top 3 risks', num: true, none: 'No open risks.', items: risks.slice(0, 3).map(function (r) {
+          return { main: '[' + r.severity + '] ' + sentence(r.title), sub: meta(r) };
+        }) },
+        { h: 'Decisions this week', none: 'No decisions recorded in the last 7 days.', items: state.raid.filter(function (r) {
+          return r.type === 'Decision' && r.date >= start && r.date <= end;
+        }).sort(byDate('date')).map(function (r) { return { main: sentence(r.title), sub: fmt(r.date) + '. Owner: ' + r.owner + '.' }; }) },
+        { h: 'Asks of leadership', none: 'No asks this week.', items: state.raid.filter(function (r) { return r.state === 'Open' && r.ask; })
+          .sort(function (a, b) { return rank[a.severity] - rank[b.severity] || byDate('followUp')(a, b); })
+          .map(function (r) { return { main: sentence(r.ask), sub: r.type + ': ' + sentence(r.title) }; }) }
+      ]
+    };
+  }
+  function summaryText() {
+    var s = summary();
+    var out = [s.title, s.range, '', s.lead, '', 'INITIATIVES BY STATUS (' + s.total + ' total)'];
+    STATUS.forEach(function (k) { out.push('- ' + k + ': ' + s.counts[k]); });
+    s.sections.forEach(function (x) {
+      out.push('', x.h.toUpperCase());
+      if (!x.items.length) out.push(x.none);
+      x.items.forEach(function (i, n) { out.push((x.num ? (n + 1) + '. ' : '- ') + i.main, '   ' + i.sub); });
+    });
+    out.push('', DISCLAIMER);
+    return out.join('\n');
+  }
+  function renderGovernance() {
+    var s = summary();
+    $('report').innerHTML = '<h2>' + esc(s.title) + '</h2><span class="sub">' + esc(s.range) + '</span><p class="lead">' + esc(s.lead) + '</p>' +
+      '<section><h3>Initiatives by status (' + s.total + ' total)</h3><div style="display:flex;flex-wrap:wrap;gap:8px 28px">' +
+      STATUS.map(function (k) { return '<span class="st">' + icon(k) + k + ': <span class="num">' + s.counts[k] + '</span></span>'; }).join('') + '</div></section>' +
+      s.sections.map(function (x) {
+        var tag = x.num ? 'ol' : 'ul';
+        return '<section><h3>' + x.h + '</h3>' + (x.items.length ? '<' + tag + '>' + x.items.map(function (i) {
+          return '<li><strong>' + esc(i.main) + '</strong><span class="sub">' + esc(i.sub) + '</span></li>';
+        }).join('') + '</' + tag + '>' : '<p class="muted">' + x.none + '</p>') + '</section>';
+      }).join('');
+    renderChart($('statusChart2'), false);
+  }
+  function render() { renderInitiatives(); renderRaid(); renderSprints(); renderBenchmarks(); renderGovernance(); }
+
+  /* ---------- Add, edit, delete ---------- */
+  var editing = null;
+  function openEditor(col, id) {
+    var s = SCHEMA[col], row = id ? state[col].find(function (r) { return r.id === id; }) : null;
+    if (id && !row) return;
+    editing = { col: col, id: id || null };
+    $('editTitle').textContent = (row ? 'Edit ' : 'Add ') + s.one;
+    $('editSave').textContent = row ? 'Save changes' : 'Add ' + s.one;
+    $('editBody').innerHTML = s.fields.map(function (f) {
+      var v = row ? row[f.k] : (f.k === 'date' ? today() : f.def || '');
+      var a = ' name="' + f.k + '" id="f-' + f.k + '"' + (f.req ? ' required' : '') + ' aria-describedby="e-' + f.k + '"', ctl;
+      if (f.t === 'select') ctl = '<select' + a + '>' + f.o.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>';
+      else if (f.t === 'textarea') ctl = '<textarea' + a + ' maxlength="4000">' + esc(v) + '</textarea>';
+      else ctl = '<input type="' + f.t + '"' + a + ' value="' + esc(v) + '"' + (f.t === 'number' ? ' step="1" min="' + f.min + '" max="' + f.max + '"' : ' maxlength="1000"') +
+        (f.list ? ' list="l-' + f.k + '"' : '') + '>' + (f.list ? '<datalist id="l-' + f.k + '">' + f.list.map(function (o) { return '<option value="' + o + '">'; }).join('') + '</datalist>' : '');
+      return '<div class="field' + (f.full ? ' full' : '') + '"><label for="f-' + f.k + '" style="font-size:.8125rem;font-weight:600">' + f.l + (f.req ? ' <span class="muted" style="font-weight:400">(required)</span>' : '') + '</label>' + ctl +
+        (f.h ? '<small>' + f.h + '</small>' : '') + '<small class="err" id="e-' + f.k + '"></small></div>';
+    }).join('');
+    $('editDlg').showModal();
+    var first = $('editBody').querySelector('input, textarea, select');
+    if (first) first.focus();
+    $('editBody').scrollTop = 0;
+  }
+  function fieldError(f, el) {
+    var v = el.value.trim();
+    if (el.validity.badInput) return f.t === 'date' ? 'Enter a full date.' : 'Enter a number.';
+    if (f.req && !v) return f.l + ' is required.';
+    if (f.t === 'url' && v && !safeUrl(v)) return 'Enter a link that starts with http:// or https://';
+    if (f.t === 'date' && v && !validDate(v)) return 'Enter a valid date.';
+    if (f.t === 'number' && v && (!/^-?\d+$/.test(v) || +v < f.min || +v > f.max)) return 'Enter a whole number from ' + f.min + ' to ' + f.max + '.';
+    return '';
+  }
+  $('editDlg').querySelector('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var s = SCHEMA[editing.col], row = {}, bad = null;
+    s.fields.forEach(function (f) {
+      var el = $('f-' + f.k), err = fieldError(f, el), v = el.value.trim();
+      $('e-' + f.k).textContent = err;
+      if (err) { el.setAttribute('aria-invalid', 'true'); bad = bad || el; } else el.removeAttribute('aria-invalid');
+      row[f.k] = f.t === 'number' ? (v === '' ? null : +v) : f.t === 'url' ? safeUrl(v) : v;
+    });
+    if (bad) { bad.focus(); return; }
+    var list = state[editing.col], i = editing.id ? list.findIndex(function (r) { return r.id === editing.id; }) : -1;
+    row.id = editing.id || uid();
+    if (i >= 0) list[i] = row; else list.push(row);
+    var isNew = !editing.id, col = editing.col;
+    var ok = save();
+    $('editDlg').close();
+    render();
+    var el = document.querySelector('#panel-' + col + ' [data-row="' + row.id + '"]');
+    var msg = (isNew ? 'Added ' : 'Saved ') + s.one + (ok ? '.' : ', but only until you close this page.');
+    if (el) {
+      el.classList.add('flash');
+      el.scrollIntoView({ block: 'nearest' });
+      el.querySelector('[data-edit]').focus({ preventScroll: true });
+    } else msg += ' It is hidden by the current filters.';
+    toast(msg);
+  });
+  function remove(col, id) {
+    var i = state[col].findIndex(function (r) { return r.id === id; });
+    if (i < 0) return;
+    var row = state[col].splice(i, 1)[0];
+    save(); render();
+    var add = document.querySelector('#panel-' + col + ' .panel-head [data-add]');
+    if (add) add.focus({ preventScroll: true });
+    toast('Deleted ' + SCHEMA[col].one + '.', function () {
+      state[col].splice(Math.min(i, state[col].length), 0, row);
+      save(); render(); toast('Restored ' + SCHEMA[col].one + '.');
+    });
+  }
+  function clearFilters() {
+    ['fStatus', 'fPriority', 'fType', 'fState'].forEach(function (id) { $(id).value = ''; });
+    $('fOverdue').checked = false;
+    renderInitiatives(); renderRaid();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var d = b.dataset;
+    if (d.add) openEditor(d.add);
+    else if (d.edit) openEditor(d.edit, d.id);
+    else if (d.del) remove(d.del, d.id);
+    else if (d.clear) clearFilters();
+    else if (d.status) { $('fStatus').value = $('fStatus').value === d.status ? '' : d.status; renderInitiatives(); }
+  });
+
+  /* ---------- Filters ---------- */
+  function fill(id, all, opts) {
+    $(id).innerHTML = '<option value="">' + all + '</option>' + opts.map(function (o) { return '<option>' + o + '</option>'; }).join('');
+  }
+  fill('fStatus', 'All statuses', STATUS); fill('fPriority', 'All priorities', LEVELS);
+  fill('fType', 'All types', TYPES); fill('fState', 'All states', STATES);
+  ['fStatus', 'fPriority'].forEach(function (id) { $(id).addEventListener('change', renderInitiatives); });
+  ['fType', 'fState', 'fOverdue'].forEach(function (id) { $(id).addEventListener('change', renderRaid); });
+
+  /* ---------- Export, import, reset, copy ---------- */
+  $('btnExport').addEventListener('click', function () {
+    var payload = { app: 'AI Adoption PMO Tracker', version: 1, exportedAt: new Date().toISOString(), notice: DISCLAIMER };
+    COLS.forEach(function (c) { payload[c] = state[c]; });
+    var url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+    var a = document.createElement('a');
+    a.href = url; a.download = 'ai-pmo-tracker-' + today() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    toast('Exported ' + a.download + '.');
+  });
+  $('btnImport').addEventListener('click', function () { $('fileInput').click(); });
+  $('fileInput').addEventListener('change', function () {
+    var f = this.files[0], input = this;
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      input.value = '';
+      var res;
+      try { res = clean(JSON.parse(rd.result)); }
+      catch (e) { toast('Import failed. ' + (e instanceof SyntaxError ? 'The file is not valid JSON.' : e.message)); return; }
+      var total = COLS.reduce(function (n, c) { return n + res.data[c].length; }, 0);
+      confirmBox('Import this file?', 'This replaces everything in the tracker with ' + plural(total, 'row') + ' from ' + f.name + '.' +
+        (res.skipped ? ' ' + plural(res.skipped, 'row') + ' will be skipped because required fields are missing.' : '') + ' Export first if you want to keep the current data.', 'Replace data', function () {
+        state = res.data; clearFilters(); render();
+        toast(save() ? 'Imported ' + plural(total, 'row') + '.' : 'Imported, but only until you close this page.');
+      });
+    };
+    rd.onerror = function () { input.value = ''; toast('Import failed. The file could not be read.'); };
+    rd.readAsText(f);
+  });
+  $('btnReset').addEventListener('click', function () {
+    confirmBox('Reset to sample data?', 'This removes your edits from this browser. Export first if you want to keep them.', 'Reset data', function () {
+      try { localStorage.removeItem(KEY); } catch (e) { /* storage unavailable */ }
+      state = sample(); clearFilters(); render(); toast('Sample data restored.');
+    });
+  });
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea'), ok = false;
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove(); $('btnCopy').focus();
+    return ok;
+  }
+  $('btnCopy').addEventListener('click', function () {
+    var text = summaryText();
+    function done(ok) { toast(ok ? 'Summary copied.' : 'Copying was blocked. Select the summary and copy it manually.'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(legacyCopy(text)); });
+    } else done(legacyCopy(text));
+  });
+
+  /* ---------- Tabs ---------- */
+  $('tabs').innerHTML = TABS.map(function (t) {
+    return '<button class="tab" role="tab" type="button" id="tab-' + t[0] + '" aria-controls="panel-' + t[0] + '" data-tab="' + t[0] + '">' + t[1] + '</button>';
+  }).join('');
+  function tabFades() {
+    var t = $('tabs'), end = t.scrollWidth - t.clientWidth;
+    $('tabsWrap').classList.toggle('more-left', t.scrollLeft > 4);
+    $('tabsWrap').classList.toggle('more-right', t.scrollLeft < end - 4);
+  }
+  $('tabs').addEventListener('scroll', tabFades, { passive: true });
+  window.addEventListener('resize', tabFades);
+  function go(name, focus) {
+    if (!TABS.some(function (t) { return t[0] === name; })) name = 'initiatives';
+    TABS.forEach(function (t) {
+      var on = t[0] === name, b = $('tab-' + t[0]);
+      b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;
+      $('panel-' + t[0]).hidden = !on;
+      if (on) {
+        var strip = $('tabs');
+        strip.scrollLeft = b.offsetLeft - strip.offsetLeft - (strip.clientWidth - b.offsetWidth) / 2;
+        if (focus) b.focus({ preventScroll: true });
+      }
+    });
+    tabFades();
+    if (name === 'governance') renderGovernance();
+    try { history.replaceState(null, '', '#' + name); } catch (e) { /* some file viewers block this */ }
+  }
+  $('tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab); });
+  $('tabs').addEventListener('keydown', function (e) {
+    var names = TABS.map(function (t) { return t[0]; }), i = names.indexOf(document.activeElement.dataset.tab);
+    if (i < 0) return;
+    var n = { ArrowRight: (i + 1) % names.length, ArrowLeft: (i + names.length - 1) % names.length, Home: 0, End: names.length - 1 }[e.key];
+    if (n == null) return;
+    e.preventDefault(); go(names[n], true);
+  });
+  window.addEventListener('hashchange', function () { go(location.hash.slice(1)); });
+  // Keep two open tabs of the tracker in step.
+  window.addEventListener('storage', function (e) {
+    if (e.key === KEY || e.key === null) { state = load() || sample(); render(); }
+  });
+
+  wireChart($('statusChart')); wireChart($('statusChart2'));
+  render();
+  go(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>
